@@ -72,8 +72,8 @@ for kk = 1:n
     
     end
     
-    % new FPI
-    [~,~,~, runtime] = QSP_CM_new(coef',parity,opts);
+    % FFPI
+    [~,~,~, runtime] = QSP_FFPI(coef',parity,opts);
     runtime_FPI_new(kk) = runtime;
     
     % Half Cholesky algorithm
