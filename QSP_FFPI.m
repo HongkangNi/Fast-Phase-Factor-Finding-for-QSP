@@ -1,4 +1,4 @@
-function [phi, err, iter, runtime] = QSP_CM_new(coef, parity, opts)
+function [phi, err, iter, runtime] = QSP_FFPI(coef, parity, opts)
 %--------------------------------------------------------------------------
 % Contraction mapping solver for finding phase factors such that the real 
 % part of the (1,1) element of the QSP unitary matrix gives desire Chebyshev
