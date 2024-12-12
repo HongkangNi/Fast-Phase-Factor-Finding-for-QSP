@@ -8,7 +8,7 @@ The functions `HC` and `QSP_FFPI` implement two new methods for phase factor fin
 
 `HC` algorithm works for any *even* target polynomial $f$, even when $\max_{-1\le x \le 1}|f(x)|$ is close to 1. The code for odd polynomials is to be updated.
 
-`QSP_FFPI` works for either even or odd target polynomials, but may fail to converge when $\max_{-1\le x \le 1}|f(x)|$ is close to 1. In practice, $\max_{-1\le x \le 1}|f(x)|<\frac{1}{2}$ will make it work. When the degree `d` of the polynomial is greater than $10^5$, the default stop criteria $10^{-12}$ may be too strict as the machine error accumulates approximately linearly. A safe choice would be setting `opts.criteria = 1e-15*d`.
+`QSP_FFPI` works for either even or odd target polynomial $f$, but may fail to converge when $\max_{-1\le x \le 1}|f(x)|$ is close to 1. In practice, $\max_{-1\le x \le 1}|f(x)|<\frac{1}{2}$ will make it work. When the degree `d` of the polynomial is greater than $10^5$, the default stop criteria $10^{-12}$ may be too strict as the machine error accumulates approximately linearly. A safe choice would be setting `opts.criteria = 1e-15*d`.
 
 ## Generating Figures
 
