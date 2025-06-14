@@ -1,3 +1,9 @@
+%% This script gnerates the Figure 1 in the paper
+%% Hongkang Ni and Lexing Ying, Fast phase factor finding for quantum signal processing, arXiv preprint
+arXiv:2410.06409 (2024).
+%% https://arxiv.org/abs/2410.06409
+
+addpath("Solvers");
 opts.print = 0;
 opts.useReal = 0;
 parity = 0;
