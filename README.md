@@ -14,9 +14,9 @@ The `QSP_FFPI` method supports both even and odd target polynomials $f$, but may
 
 The three proposed methods significantly outperform previous state-of-the-art techniques, as illustrated in the figures below. A detailed complexity analysis is provided in [\[1\]](#ref1) and [\[2\]](#ref2).
 
-![Runtime comparasion in non-fully coherent setting](Images/non_fc2.pdf)
+![Runtime comparison in non-fully coherent setting](Images/non_fc2.png)
 
-![Runtime comparasion in fully coherent setting](Images/fully_coh2.pdf)
+![Runtime comparison in fully coherent setting](Images/fully_coh2.png)
 
 ## Example Usage
 
