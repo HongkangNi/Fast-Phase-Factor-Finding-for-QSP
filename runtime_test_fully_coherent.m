@@ -23,11 +23,11 @@ for kk = 1:n
     d = ceil(1.4*tau+log(1e14));
     f = chebfun(targ,d);
     coef = chebcoeffs(f);
-    coef = coef(parity+1:2:end)';
+    coef = coef(parity+1:2:end);
     
     % Half Cholesky algorithm
     tic
-    phi = HC(coef, 1e-3);
+    phi = HC(coef, parity, 1e-3);
     runtime_HC(kk) = toc;
     
     if kk <= 5
@@ -37,7 +37,7 @@ for kk = 1:n
         bc(1) = bc(1)*2;   
         d = length(bc) - 1;
         N = 1000*d;
-        ext_bc = [bc,zeros(1,N-2*d-1),bc(end:-1:2)];
+        ext_bc = [bc;zeros(N-2*d-1,1);bc(end:-1:2)];
         bz = ifft(ext_bc)*N;
         bz = bz.';
         logsqrt_b = log(sqrt(1-abs(bz).^2));
@@ -64,7 +64,6 @@ for kk = 1:n
 
 
 
-        coef = coef';
 
         % Newton's method
         opts.method = 'Newton';

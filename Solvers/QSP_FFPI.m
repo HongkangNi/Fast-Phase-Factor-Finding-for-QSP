@@ -31,6 +31,16 @@ if ~isfield(opts,'itprint');              opts.itprint = 1; end
 
 tic
 
+% Transpose if coef is a row vector
+if ~isvector(coef)
+    error('invalid input')
+end
+flag = 0;
+if isrow(coef)
+    coef = coef.';
+    flag = -1;
+end
+
 %--------------------------------------------------------------------------
 % copy value to parameters
 
@@ -78,6 +88,10 @@ while true
         end
         fprintf(str_num,iter,err);
     end
+end
+
+if flag == -1
+    phi = phi.';
 end
 
 runtime = toc;

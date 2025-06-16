@@ -23,12 +23,12 @@ for kk = 1:n
     % -----------------------------------------
     % random non-fully-coherent example
     rng(1);
-    coef = rand(1,d)-0.5;
+    coef = rand(d,1)-0.5;
     bc = 1i*coef/2;
     bc(1) = bc(1)*2;
     d = length(bc) - 1;
     N = 50*d;
-    ext_bc = [bc,zeros(1,N-2*d-1),bc(end:-1:2)];
+    ext_bc = [bc;zeros(N-2*d-1,1);bc(end:-1:2)];
     bz = ifft(ext_bc)*N;
     bz = bz.';
     coef = coef/max(abs(bz))*0.5;
@@ -41,7 +41,7 @@ for kk = 1:n
         bc(1) = bc(1)*2;   
         d = length(bc) - 1;
         N = 50*d;
-        ext_bc = [bc,zeros(1,N-2*d-1),bc(end:-1:2)];
+        ext_bc = [bc;zeros(N-2*d-1,1);bc(end:-1:2)];
         bz = ifft(ext_bc)*N;
         bz = bz.';
         logsqrt_b = log(sqrt(1-abs(bz).^2));
@@ -68,23 +68,23 @@ for kk = 1:n
 
         % Newton's method
         opts.method = 'Newton';
-        [~,out_Newton] = QSP_solver(coef',parity,opts);
+        [~,out_Newton] = QSP_solver(coef,parity,opts);
         runtime_Newton_complex(kk) = out_Newton.time;
 
         % Contraction mapping (FPI)
         opts.method = 'FPI';
-        [~,out_FPI] = QSP_solver(coef',parity,opts);
+        [~,out_FPI] = QSP_solver(coef,parity,opts);
         runtime_CM_complex(kk) = out_FPI.time;
     
     end
     
     % FFPI
-    [~,~,~, runtime] = QSP_FFPI(coef',parity,opts);
+    [~,~,~, runtime] = QSP_FFPI(coef,parity,opts);
     runtime_FPI_new(kk) = runtime;
     
     % Half Cholesky algorithm
     tic
-    phi = HC(coef, 0.5);
+    phi = HC(coef, parity, 0.5);
     runtime_HC(kk) = toc;
 
     

@@ -1,8 +1,8 @@
 %% 
 % This script demonstrates example usage of the three proposed solvers 
-% for finding QSP phase factors. The target function is a polynomial 
-% approximation of cos(tau * x), as used in the application of
-% Hamiltonian simulation.
+% for finding QSP phase factors. The target functions are polynomial 
+% approximations of cos(tau * x) and sin(tau * x), as used in the application 
+% of Hamiltonian simulation.
 %
 % The FFPI solver works only in the non-fully coherent setting 
 % (i.e., large eta), whereas the other two solvers, HC and INFFT, 
@@ -13,40 +13,41 @@ opts.print = 0;
 opts.useReal = 0;
 opts.targetPre = false;
 opts.criteria = 1e-12;
-parity = 0;
+
 
 tau = 100;
 
-%% An fully coherent example
+%% A fully coherent example for even polynomial
+parity = 0;
 eta = 1e-3;
 targ = @(x) (1-eta)*cos(tau.*x);
 d = ceil(1.4*tau+log(1e14));
 f = chebfun(targ,d);
 coef = chebcoeffs(f);
-coef = coef(parity+1:2:end)';
+coef = coef(parity+1:2:end);
     
 % Weiss + Half Cholesky algorithm
-phi1_HC = HC(coef, eta);
+phi1_HC = HC(coef, parity, eta);
 
 % Weiss + INFFT algorithm
-phi1_WeissINFFT = Weiss_INFFT(coef, eta);
+phi1_WeissINFFT = Weiss_INFFT(coef, parity, eta);
 
-%% A non fully coherent example
+%% A non fully coherent example for even polynomial
 eta = 0.5;
 targ = @(x) (1-eta)*cos(tau.*x);
 d = ceil(1.4*tau+log(1e14));
 f = chebfun(targ,d);
 coef = chebcoeffs(f);
-coef = coef(parity+1:2:end)';
+coef = coef(parity+1:2:end);
 
 % FFPI algorithm
-phi2_FFPI = QSP_FFPI(coef',parity,opts);
+phi2_FFPI = QSP_FFPI(coef,parity,opts);
     
 % Weiss + Half Cholesky algorithm
-phi2_HC = HC(coef, eta);
+phi2_HC = HC(coef, parity, eta);
 
 % Weiss + INFFT algorithm
-phi2_WeissINFFT = Weiss_INFFT(coef, eta);
+phi2_WeissINFFT = Weiss_INFFT(coef, parity, eta);
 
 %% Test whether the results are correct
 
@@ -61,16 +62,48 @@ error_FFPI = 0;
 error_HC = 0;
 error_WeissINFFT = 0;
 for x = x_grid
-    error_FFPI = max(error_FFPI, abs(ChebyCoef2Func(x, coef, 0, true) - QSPGetPim_sym(phi2_FFPI, x, parity)));
-    error_HC = max(error_HC, abs(ChebyCoef2Func(x, coef, 0, true) - QSPGetPim_sym(phi2_HC, x, parity)));
-    error_WeissINFFT = max(error_WeissINFFT, abs(ChebyCoef2Func(x, coef, 0, true) - QSPGetPim_sym(phi2_WeissINFFT, x, parity)));
+    error_FFPI = max(error_FFPI, abs(ChebyCoef2Func(x, coef, parity, true) - QSPGetPim_sym(phi2_FFPI, x, parity)));
+    error_HC = max(error_HC, abs(ChebyCoef2Func(x, coef, parity, true) - QSPGetPim_sym(phi2_HC, x, parity)));
+    error_WeissINFFT = max(error_WeissINFFT, abs(ChebyCoef2Func(x, coef, parity, true) - QSPGetPim_sym(phi2_WeissINFFT, x, parity)));
 end
+disp('-------------------Even polynomial estimated errors-------------------')
 disp(['Estimated error of FFPI: ', num2str(error_FFPI)]);
 disp(['Estimated error of Weiss + HC: ', num2str(error_HC)]);
 disp(['Estimated error of Weiss + INFFT: ', num2str(error_WeissINFFT)]);
 
 
+%% A non fully coherent example for odd polynomial
+parity = 1;
+eta = 0.5;
+targ = @(x) (1-eta)*sin(tau.*x);
+d = ceil(1.4*tau+log(1e14));
+f = chebfun(targ,d);
+coef = chebcoeffs(f);
+coef = coef(parity+1:2:end);
 
+% FFPI algorithm
+phi2_FFPI = QSP_FFPI(coef,parity,opts);
+    
+% Weiss + Half Cholesky algorithm
+phi2_HC = HC(coef, parity, eta);
 
+% Weiss + INFFT algorithm
+phi2_WeissINFFT = Weiss_INFFT(coef, parity, eta);
+
+%% Test whether the results are correct
+
+x_grid = -1:0.05:1;
+error_FFPI = 0;
+error_HC = 0;
+error_WeissINFFT = 0;
+for x = x_grid
+    error_FFPI = max(error_FFPI, abs(ChebyCoef2Func(x, coef, parity, true) - QSPGetPim_sym(phi2_FFPI, x, parity)));
+    error_HC = max(error_HC, abs(ChebyCoef2Func(x, coef, parity, true) - QSPGetPim_sym(phi2_HC, x, parity)));
+    error_WeissINFFT = max(error_WeissINFFT, abs(ChebyCoef2Func(x, coef, parity, true) - QSPGetPim_sym(phi2_WeissINFFT, x, parity)));
+end
+disp('-------------------Odd polynomial estimated errors-------------------')
+disp(['Estimated error of FFPI: ', num2str(error_FFPI)]);
+disp(['Estimated error of Weiss + HC: ', num2str(error_HC)]);
+disp(['Estimated error of Weiss + INFFT: ', num2str(error_WeissINFFT)]);
 
 
